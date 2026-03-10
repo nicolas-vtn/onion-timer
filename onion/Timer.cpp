@@ -31,6 +31,7 @@ namespace onion
 	void Timer::Start()
 	{
 		assert(m_elapsedPeriod.count() > 0 && "Timer period must be > 0");
+		assert(m_timeoutFunction && "Timer timeout function must be set");
 
 		// Already Started.
 		if (m_timerThread.joinable())
@@ -61,8 +62,18 @@ namespace onion
 
 	void Timer::Restart()
 	{
-		Stop();
-		Start();
+		if (!isRunning())
+		{
+			Start();
+			return;
+		}
+
+		auto nextElapsed = std::chrono::steady_clock::now() + m_elapsedPeriod;
+		{
+			std::lock_guard lock(m_mutex);
+			m_nextElapsed = nextElapsed;
+		}
+		m_cv.notify_all();
 	}
 
 	// --------------------------- Private Methods ------------------------------
