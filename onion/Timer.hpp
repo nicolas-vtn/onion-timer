@@ -47,20 +47,20 @@ namespace onion
 
 		/// @brief Checks if the timer is currently running.
 		/// @return True if the timer is running, false otherwise.
-		bool isRunning();
+		bool isRunning() const;
 		/// @brief Gets the period of time that has to elapse before the timeout function is called.
 		/// @return The period of time that has to elapse before the timeout function is called.
-		std::chrono::duration<double> getElapsedPeriod();
+		std::chrono::duration<double> getElapsedPeriod() const;
 		/// @brief Gets whether the timer is set to repeat or execute only once.
 		/// @return True if the timer is set to repeat, false if it is set to execute only once.
-		bool getRepeat();
+		bool getRepeat() const;
 		/// @brief Gets the remaining time before the timer elapses.
 		/// @return The remaining time before the timer elapses.
-		std::chrono::duration<double> getRemainingTime();
+		std::chrono::duration<double> getRemainingTime() const;
 
 	  private:
 		/// @brief Mutex to protect access to the timer's internal state.
-		std::mutex m_mutex;
+		mutable std::mutex m_mutex;
 		/// @brief Condition variable used to wake up the timer thread when the timer is stopped or restarted.
 		std::condition_variable_any m_cv;
 		/// @brief Elapsed period before the timer elapses.

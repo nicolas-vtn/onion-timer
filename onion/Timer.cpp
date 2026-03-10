@@ -68,6 +68,8 @@ namespace onion
 	// --------------------------- Private Methods ------------------------------
 	void Timer::WaitLoop(std::stop_token st)
 	{
+		std::stop_callback cb(st, [this] { m_cv.notify_all(); });
+
 		std::unique_lock lock(m_mutex);
 
 		m_startTime = std::chrono::steady_clock::now();
@@ -122,24 +124,24 @@ namespace onion
 		m_repeat = repeat;
 	}
 
-	bool Timer::isRunning()
+	bool Timer::isRunning() const
 	{
 		return m_timerThread.joinable();
 	}
 
-	std::chrono::duration<double> Timer::getElapsedPeriod()
+	std::chrono::duration<double> Timer::getElapsedPeriod() const
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		return std::chrono::duration_cast<std::chrono::duration<double>>(m_elapsedPeriod);
 	}
 
-	bool Timer::getRepeat()
+	bool Timer::getRepeat() const
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		return m_repeat;
 	}
 
-	std::chrono::duration<double> Timer::getRemainingTime()
+	std::chrono::duration<double> Timer::getRemainingTime() const
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 
