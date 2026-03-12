@@ -119,6 +119,8 @@ namespace onion
 
 	void Timer::setElapsedPeriod(std::chrono::duration<double> elapsedPeriod)
 	{
+		bool wasRunning = isRunning();
+
 		Stop();
 
 		{
@@ -126,7 +128,11 @@ namespace onion
 			m_elapsedPeriod = std::chrono::duration_cast<std::chrono::steady_clock::duration>(elapsedPeriod);
 		}
 
-		Start();
+		if (wasRunning)
+		{
+			Restart();
+			return;
+		}
 	}
 
 	void Timer::setRepeat(bool repeat)
