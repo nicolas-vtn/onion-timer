@@ -68,6 +68,13 @@ namespace onion
 			return;
 		}
 
+		if (getRemainingTime() <= std::chrono::duration<double>(0))
+		{
+			// If the timer already elapsed, we restart it.
+			Stop();
+			Start();
+		}
+
 		auto nextElapsed = std::chrono::steady_clock::now() + m_elapsedPeriod;
 		{
 			std::lock_guard lock(m_mutex);
